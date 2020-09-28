@@ -1,0 +1,10 @@
+---
+-   name: Add mappings to /etc/hosts
+    blockinfile:
+        path: /etc/lol
+        marker: "<!--  ANSIBLE MANAGED BLOCK {mark} -->"
+        insertafter: "localhost"
+        block: |
+            {{ hostvars[inventory_hostname]['ip'] }}    {{ hostvars[inventory_hostname]['ansible_host'] }}
+        backup: yes
+    

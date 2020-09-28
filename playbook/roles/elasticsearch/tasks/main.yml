@@ -1,0 +1,19 @@
+---
+- name: Populate the nodes to /etc/hosts
+  include: etchosts.yml
+
+- name: include java.yml
+  include: java.yml
+
+- name: Install unzip
+  apt:
+    name: unzip
+    state: present
+
+- name: Install Elasticsearch
+  include: elasticsearch.yml
+
+- name: Start Elasticsearch Service
+  service:
+    name: elasticsearch
+    state: started

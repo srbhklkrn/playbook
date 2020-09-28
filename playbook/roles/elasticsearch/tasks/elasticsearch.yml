@@ -1,0 +1,61 @@
+---
+-   name: Install Elasticsearch repository
+    become: yes
+    block:
+    -   name: Install apt-transport-https to support https APT downloads
+        apt:
+            name: apt-transport-https
+            state: present
+
+    -   name: Download and add signing keys for the repositories
+        apt_key:
+            url: https://d3g5vo6xdbdb9a.cloudfront.net/GPG-KEY-opendistroforelasticsearch
+            state: present
+
+    -   name: Add Opendistro Elastic repository into sources list
+        apt_repository:
+            repo: deb https://d3g5vo6xdbdb9a.cloudfront.net/apt stable main
+            state: present
+
+    -   name: Install Elasticsearch OSS
+        apt:
+            deb: https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.8.0-amd64.deb
+
+    -   name: Run apt-get update 
+        apt:
+            update_cache: yes
+
+    -   name: Install the latest version of Open Distro for Elasticsearch
+        apt:
+            name: opendistroforelasticsearch
+            state: present
+
+    -   name: Reload daemon
+        systemd:
+            daemon_reload: yes
+    
+    -   name: Adding Elasticsearch as a service
+        service: 
+            name: elasticsearch 
+            enabled: yes
+
+    -   name: Rename OLD Elastic configuration
+        shell: mv elasticsearch.yml old_elasticsearch.yml
+        args:
+            chdir: /etc/elasticsearch/
+
+    -   name: Copy Elasticsearch configuration file
+        template: 
+            src: elasticsearch.yml.j2
+            dest: /etc/elasticsearch/elasticsearch.yml 
+            group: elasticsearch 
+            mode: 0644 
+            backup: yes
+
+    -   name: Copy jvm.options file for instance
+        template: 
+            src: jvm.options.j2
+            dest: /etc/elasticsearch/jvm.options 
+            group: elasticsearch 
+            mode: 0644 
+            force: yes

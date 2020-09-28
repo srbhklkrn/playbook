@@ -1,0 +1,12 @@
+---
+
+  - name: Elasticsearch with opendistro configuration
+    hosts: es-cluster
+    roles:
+      - { role: elasticsearch }
+  
+  # - name: Kibana with opendistro configuration
+  #   hosts: kibana
+  #   gather_facts: false
+  #   roles:
+  #     - { role: centos7/kibana_opendistro }
